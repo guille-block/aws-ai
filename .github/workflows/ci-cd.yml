@@ -5,6 +5,9 @@ on: [push]
 jobs:
   build:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      secrets: read
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
@@ -26,7 +29,7 @@ jobs:
           key: ${{ secrets.AWS_SSH_KEY }}
           port: 22
           source: "."
-          target: "/path/to/target/directory"
+          target: "/home/ec2-user/my-flask-app"
 
       - name: Build and run Docker container on EC2
         uses: appleboy/ssh-action@master
@@ -36,7 +39,7 @@ jobs:
           key: ${{ secrets.AWS_SSH_KEY }}
           port: 22
           script: |
-            cd /path/to/target/directory
+            cd /home/ec2-user/my-flask-app
             docker build -t my-flask-app .
             docker stop my-flask-app || true
             docker rm my-flask-app || true
